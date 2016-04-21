@@ -1,19 +1,18 @@
-import React from 'react'
+import React, {Component} from 'react'
 import { Navbar, Nav } from 'react-bootstrap'
 import { Link } from 'react-router'
+import {connect} from 'react-redux'
+import {bindActionCreators} from 'redux'
 
-export default class Header extends React.Component {
-  constructor () {
-    super()
-    this.state = { menuOpen: false }
-  }
+import {toggleMenu} from './../../actions'
 
+class Header extends Component {
   render () {
     return (
       <div>
         <Navbar
-          expanded={this.state.menuOpen}
-          onToggle={() => { this.setState({ menuOpen: !this.state.menuOpen }) }}
+          expanded={this.props.menuOpen}
+          onToggle={this.props.toggleMenu}
           className='top-menu'
           fixedTop={true}>
           <Navbar.Header>
@@ -26,15 +25,17 @@ export default class Header extends React.Component {
           </Navbar.Header>
           <Navbar.Collapse pullRight>
             <Nav pullRight>
-              {this.props.menuItems.map(item => {
-                return (
-                  <li onClick={() => { this.setState({ menuOpen: false }) }}
-                    role='presentation'
-                    key={item + '-li'}>
-                    <Link key={item} to={'/' + item}>{item}</Link>
-                  </li>
-                )
-              })}
+              {this.props.menuItems
+                .map(item => {
+                  return (
+                    <li onClick={this.props.toggleMenu}
+                      role='presentation'
+                      key={item + '-li'}>
+                      <Link key={item} to={'/' + item}>{item}</Link>
+                    </li>
+                  )
+                }
+              )}
             </Nav>
           </Navbar.Collapse>
           <p className='user-logged-in'>{this.props.auth ? 'Welcome ' + this.props.userDetails : ''}</p>
@@ -43,3 +44,24 @@ export default class Header extends React.Component {
     )
   }
 }
+
+Header.propTypes = {
+  menuOpen: React.PropTypes.bool,
+  toggleMenu: React.PropTypes.func,
+  logoUrl: React.PropTypes.string,
+  menuItems: React.PropTypes.array,
+  auth: React.PropTypes.string,
+  userDetails: React.PropTypes.string
+}
+
+const mapStateToProps = state => {
+  return {
+    state: state,
+    menuOpen: state.toggleMenu.menuOpen
+  }
+}
+const mapDispatchToProps = dispatch => {
+  return bindActionCreators({toggleMenu}, dispatch)
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Header)
