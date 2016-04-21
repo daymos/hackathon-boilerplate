@@ -1,5 +1,4 @@
-import React from 'react'
-import axios from 'axios'
+import React, {Component} from 'react'
 import Header from './Header/index.js'
 import Footer from './Footer/index.js'
 
@@ -10,43 +9,11 @@ const options = {
   logoUrl: 'img/rhino.png'
 }
 
-export default class App extends React.Component {
-  constructor () {
-    super()
-    this.state = {
-      auth: false,
-      userDetails: ''
-    }
-  }
-
-  checkState () {
-    const state = [0, 1, 2, 4, 1, 2]
-    const index = 2;
-    return [
-      ...state.slice(0, index),
-      state[index] + 1,
-      ...state.slice(index + 1)
-    ]
-  }
-
-  componentWillMount () {
-    console.log(this.checkState())
-    // if (document.cookie.indexOf('reactCookie') > -1) {
-    //   axios.get('/user-details').then(response => {
-    //     this.setState({
-    //       userDetails: response.data,
-    //       auth: true
-    //     })
-    //   })
-    // }
-  }
-
+export default class App extends Component {
   render () {
     return (
       <div>
         <Header
-          userDetails={this.state.userDetails}
-          auth={this.state.auth}
           menuItems={options.menuItems}
           logoUrl={options.logoUrl}
           fluid={true} />
@@ -56,4 +23,8 @@ export default class App extends React.Component {
       </div>
     )
   }
+}
+
+App.propTypes = {
+  children: React.PropTypes.element
 }
